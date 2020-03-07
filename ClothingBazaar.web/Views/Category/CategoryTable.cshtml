@@ -25,10 +25,13 @@
                 <div class="form-group">
                     <label>Action</label>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4 pr-0">
                             <button class="btn btn-primary form-control" type="button" id="searchBtn">Search</button>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4 pr-0">
+                            <button class="btn btn-primary form-control" type="button" id="resetCatBtn">Reset</button>
+                        </div>
+                        <div class="col-md-4 pr-0">
                             <button class="btn btn-primary form-control" type="button" id="newCatBtn">New</button>
                         </div>
                     </div>
@@ -42,9 +45,9 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <td>Category Name</td>
-                <td>Products</td>
-                <td class="wrap-td">Actions</td>
+                <td class="font-weight-bold" >Category Name</td>
+                <td class="font-weight-bold">Products</td>
+                <td class="wrap-td font-weight-bold">Actions</td>
             </tr>
         </thead>
         <tbody>
@@ -75,6 +78,7 @@
     </table>
 </div>
 
+<!--#region Old Code  -->
 @*<div class="row">
         <div class="col-md-12">
             <div class="title-section">
@@ -117,14 +121,9 @@
             </tbody>
         </table>
     </div>*@
+<!--#endregion-->
 
 <script>
-
-    function focusAction() {
-        $('html, body').animate({
-            scrollTop: $("#createCategoryContainer").offset().top - 100
-        }, 1000);
-    }
 
     $("#searchBtn").click(function () {
         var searchValue = $("#searchTxt").val();
@@ -144,8 +143,27 @@
             });
     });
 
+    $("#resetCatBtn").click(function () {
+        focusAction("tableCategoryContainer");
+        var searchValue = "";
+
+        $.ajax({
+            url: '@Url.Action("CategoryTable", "Category")', //Using URL helper instead of the hard coded URL which we used before.
+                /*'/Category/CategoryTable',*/
+            data: {
+                search: searchValue
+            }
+        })
+            .done(function (response) {
+                $("#tableCategoryContainer").html(response);
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+    });
+
     $(".deleteCatBtn").click(function () {
-        focusAction();
+        focusAction("tableCategoryContainer");
         $.ajax({
             url: '/Category/Delete',
             data: {
@@ -162,7 +180,7 @@
     });
 
     $(".editCatBtn").click(function () {
-        focusAction();
+        focusAction("createCategoryContainer");
         $.ajax({
             url: '/Category/Edit',
             data: {
@@ -184,7 +202,7 @@
             .done(function (response) {
                 $("#createCategoryContainer").html(response);
 
-                focusAction();
+                focusAction("createCategoryContainer");
             })
             .fail(function (XMLHttpRequest, textStatus, errorThrown) {
                 alert("FAIL");

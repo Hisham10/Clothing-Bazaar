@@ -40,42 +40,45 @@
     </div>
 
     <button id="catSubmit" type="button" class="btn btn-primary">Save</button>
+    <button id="catCancel" type="button" class="btn btn-primary">Cancel</button>
 </form>
 
+<!--#region Old Code  -->
 @*<form id="catCreateForm">
 
-    <div class="form-group">
-        <label>Name</label>
-        <input class="form-control" name="Name" />
-    </div>
+        <div class="form-group">
+            <label>Name</label>
+            <input class="form-control" name="Name" />
+        </div>
 
-    <br />
+        <br />
 
-    <div class="form-group">
-        <label>Description</label>
-        <input class="form-control" name="Description" />
-    </div>
-    <br />
+        <div class="form-group">
+            <label>Description</label>
+            <input class="form-control" name="Description" />
+        </div>
+        <br />
 
-    <div class="form-group">
-        <label>Image</label>
-        <input id="ImageURL" name="ImageURL" type="hidden" />
-        <input class="form-control" id="imageUpload" name="Image" type="file" />
-    </div>
-    <br />
+        <div class="form-group">
+            <label>Image</label>
+            <input id="ImageURL" name="ImageURL" type="hidden" />
+            <input class="form-control" id="imageUpload" name="Image" type="file" />
+        </div>
+        <br />
 
-    <div class="comment-respond">
-        <input type="checkbox" name="isFeatured" id="isFeatured" style="display: inline;" value="true"> 
-        <label for="isFeatured">Featured Category</label>
-    </div>
-    <br />
+        <div class="comment-respond">
+            <input type="checkbox" name="isFeatured" id="isFeatured" style="display: inline;" value="true">
+            <label for="isFeatured">Featured Category</label>
+        </div>
+        <br />
 
-    <img id="imageContainer" />
+        <img id="imageContainer" />
 
-    <br />
+        <br />
 
-    <button type="button" class="btn btn-primary" id="catSubmit">Save</button> We need to mention the type button here for ajax to pick this button up. also remove any post method
-</form>*@
+        <button type="button" class="btn btn-primary" id="catSubmit">Save</button> We need to mention the type button here for ajax to pick this button up. also remove any post method
+    </form>*@
+<!--#endregion-->
 
 <script>
     $("#catSubmit").click(function () {
@@ -83,15 +86,21 @@
             type: "POST",
             url: '@Url.Action("Create", "Category")', //'/Category/Create',
             data: $("#catCreateForm").serialize(), //Picks all the values in the text boxes.
-            
+
         })
             .done(function (response) {
+                focusAction("tableCategoryContainer");
                 $("#tableCategoryContainer").html(response);
                 $("#createCategoryContainer").html("");
             })
             .fail(function (XMLHttpRequest, textStatus, errorThrown) {
                 alert("Fail");
             });
+    });
+
+    $("#catCancel").click(function () {
+        focusAction("tableCategoryContainer");
+        $("#createCategoryContainer").html("");
     });
 
     $("#imageUpload").change(function () {

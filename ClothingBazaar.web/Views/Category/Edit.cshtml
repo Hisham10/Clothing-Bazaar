@@ -11,6 +11,7 @@
 
 <h2>Edit Category</h2>
 
+<!--#region Old Code  -->
 @*<form id="catEditForm">
         <div class="form-group">
             <input type="hidden" name="ID" value="@Model.ID" />
@@ -57,6 +58,7 @@
             <button type="button" class="btn btn-secondary" id="cancelEditCatBtn">Cancel</button>
         </div>
     </form>*@
+<!--#endregion-->
 
 <form id="catEditForm">
     <input type="hidden" name="ID" value="@Model.ID" />
@@ -101,6 +103,7 @@
 <script>
 
     $("#cancelEditCatBtn").click(function () {
+        focusAction("tableCategoryContainer");
         $("#createCategoryContainer").html("");
     });
 
@@ -111,6 +114,7 @@
             data: $("#catEditForm").serialize() //Picks all the values in the text boxes.
         })
             .done(function (response) {
+                focusAction("tableCategoryContainer");
                 $("#tableCategoryContainer").html(response);
                 $("#createCategoryContainer").html("");
             })

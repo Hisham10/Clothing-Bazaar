@@ -28,10 +28,13 @@
                 <div class="form-group">
                     <label>Action</label>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4 pr-0">
                             <button class="btn btn-primary form-control" type="button" id="searchBtn">Search</button>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4 pr-0">
+                            <button class="btn btn-primary form-control" type="button" id="resetBtn">Reset</button>
+                        </div>
+                        <div class="col-md-4 pr-0">
                             <button class="btn btn-primary form-control" type="button" id="newBtn">New</button>
                         </div>
                     </div>
@@ -142,17 +145,9 @@
 </div>
 
 <script>
-
-    $('#productsTable').DataTable();
-
-    function focusAction() {
-        $('html, body').animate({
-            scrollTop: $("#createContainer").offset().top - 100
-        }, 1000);
-    }
+    $('#productsTable').DataTable(); //Used for Pagination (Datatables)
 
     $(".deleteBtn").click(function () {
-
         $.ajax({
             type: 'POST',
             url: '@Url.Action("Delete", "Product")', //'/Product/Delete',
@@ -161,7 +156,7 @@
             }
         })
             .done(function (response) {
-
+                focusAction("tableContainer");
                 $("#tableContainer").html(response);
             })
             .fail(function (XMLHttpRequest, textStatus, errorThrown) {
@@ -170,7 +165,7 @@
     });
 
     $(".editBtn").click(function () {
-        focusAction();
+        focusAction("createContainer");
         $.ajax({
             url: '@Url.Action("Edit", "Product")', //'/Product/Edit',
             data: {
@@ -186,7 +181,7 @@
     });
 
     $("#newBtn").click(function () {
-
+        focusAction("createContainer");
         $.ajax({
             url: '@Url.Action("Create", "Product")', //'/Product/Create',
         })
@@ -202,6 +197,24 @@
     $("#searchBtn").click(function () {
 
         var searchValue = $("#searchTxt").val();
+
+        $.ajax({
+            url: '@Url.Action("ProductTable", "Product")', //'/Product/ProductTable',
+            data: {
+                search: searchValue
+            }
+        })
+            .done(function (response) {
+                $("#tableContainer").html(response);
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Fail");
+            });
+    });
+
+    $("#resetBtn").click(function () {
+        focusAction("tableContainer");
+        var searchValue = "";
 
         $.ajax({
             url: '@Url.Action("ProductTable", "Product")', //'/Product/ProductTable',

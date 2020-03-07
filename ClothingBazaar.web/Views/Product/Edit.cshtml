@@ -46,13 +46,13 @@
 
     <div class="form-group">
         <label>Edit Image</label>
-        <input id="productEditImageURL" name="ImageURL" type="hidden" value="@plaeceholder"/>
+        <input id="productEditImageURL" name="ImageURL" type="hidden" value="@plaeceholder" />
         <input id="productEditImageUpload" class="form-control" name="Image" type="file" />
     </div>
     <label>Current Image Selected</label>
     <br />
     <div id="ImageProductCaption"></div>
-    
+
     <img id="EditProductImageContainer" src=@plaeceholder>
 
     <br />
@@ -63,9 +63,10 @@
     <br />
 
     <button id="updateBtn" type="button" class="btn btn-primary">Update</button>
+    <button id="cancelBtn" type="button" class="btn btn-primary">Cancel</button>
 </form>
 
-
+<!--#region Old Code-->
 @*<form id="editForm">
     <div class="form-group">
 
@@ -132,10 +133,10 @@
         <button type="button" class="btn btn-primary" id="updateBtn">Update</button>
     </div>
 </form>*@
+<!--#endregion-->
 
 <script>
     $(document).ready(function () {
-
         debugger;
         if ('@Model.ImageUrl' != '') {
             $("#EditProductImageContainer").attr("src", '@Model.ImageUrl');
@@ -143,6 +144,11 @@
         else {
             $("#ImageProductCaption").append("<p>No image assigned to this Category.</p>");
         }
+    });
+
+    $("#cancelBtn").click(function () {
+        focusAction("tableContainer");
+        $("#createContainer").html("");
     });
 
     $("#updateBtn").click(function () {
@@ -153,6 +159,7 @@
             data: $("#editProduct").serialize() //Picks all the values in the text boxes.
         })
             .done(function (response) {
+                focusAction("tableContainer");
                 $("#tableContainer").html(response);
                 $("#createContainer").html("");
             })

@@ -3,19 +3,22 @@
     ViewBag.Title = "Index";
 }
 
+<!--#region Old Code  -->
 @*<div class="container">
-    <div id="tableCategoryContainer">
-        @{
-            Html.RenderAction("CategoryTable");
-        }
-    </div>
+        <div id="tableCategoryContainer">
+            @{
+                Html.RenderAction("CategoryTable");
+            }
+        </div>
 
-    <hr />
+        <hr />
 
-    <div id="createCategoryContainer">
+        <div id="createCategoryContainer">
 
-    </div>
-</div>*@
+        </div>
+    </div>*@
+<!--#endregion Old Code  -->
+
 <section class="flat-row flat-iconbox">
     <div class="container">
         <div class="row">
@@ -39,3 +42,11 @@
         </div>
     </div>
 </section>
+
+<script>
+    function focusAction(controlToFocus) {
+        $('html, body').animate({
+            scrollTop: $("#" + controlToFocus).offset().top - 100
+        }, 1000);
+    }
+</script>
