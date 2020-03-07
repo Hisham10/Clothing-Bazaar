@@ -1,0 +1,197 @@
+﻿@model EditProductViewModel
+
+@{
+    ViewBag.Title = "Edit";
+
+    var plaeceholder = "";
+
+    if (Model.ImageUrl != "")
+    {
+        plaeceholder = Model.ImageUrl;
+    }
+    else
+    {
+        plaeceholder = "";
+    }
+
+}
+
+<h2>Edit Product</h2>
+
+<form id="editProduct">
+    <input type="hidden" name="ID" value="@Model.ID" />
+
+    <div class="form-group">
+        <label>Category</label>
+        <select class="form-control" name="CategoryID">
+            @foreach (var category in Model.AvailableCategories)
+            {
+                var selected = category.ID == Model.CategoryID ? "selected" : string.Empty;
+                <option value="@category.ID" @selected>@category.Name</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Name</label>
+        <input class="form-control" name="Name" value="@Model.Name" />
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <input class="form-control" name="Description" value="@Model.Description" />
+    </div>
+    <div class="form-group">
+        <label>Price</label>
+        <input class="form-control" name="Price" value="@Model.Price" />
+    </div>
+
+    <div class="form-group">
+        <label>Edit Image</label>
+        <input id="productEditImageURL" name="ImageURL" type="hidden" value="@plaeceholder"/>
+        <input id="productEditImageUpload" class="form-control" name="Image" type="file" />
+    </div>
+    <label>Current Image Selected</label>
+    <br />
+    <div id="ImageProductCaption"></div>
+    
+    <img id="EditProductImageContainer" src=@plaeceholder>
+
+    <br />
+
+    <br />
+    <img id="productEditImageContainer">
+
+    <br />
+
+    <button id="updateBtn" type="button" class="btn btn-primary">Update</button>
+</form>
+
+
+@*<form id="editForm">
+    <div class="form-group">
+
+        <div class="form-group">
+            <label>Category</label>
+            <select name="CategoryID" class="form-control">
+                @{
+                    var modelcatname = "";
+                    if (Model.Products.Category != null)
+                    {
+                        modelcatname = Model.Products.Category.Name;
+                    }
+                    else
+                    {
+                        modelcatname = "-- Select a Category --";
+                    }
+                }
+                @*<option disabled selected> @modelcatname </option> @*Default selection of dropdown*@
+                @*@foreach (var category in Model.Categories)
+                {
+                    <option value="@category.ID">@category.Name</option>//We will pass the 'value' of the category ID.
+                }*@
+
+            @*</select>
+        </div>*@
+
+
+        @*<input type="hidden" name="ID" value="@Model.Products.ID" />
+        <div class="form-group">
+            @*To submit a button, set it up in a form tag*@
+            @*<label>Name</label>
+            <input class="form-control" name="Name" value="@Model.Products.Name" />*@
+        @*</div>
+
+        <br /> @*Adds a line in between Name and Description*@
+
+        @*<div class="form-group">
+            @*To submit a button, set it up in a form tag*@
+            @*<label>Description</label>
+            <input class="form-control" name="Description" value="@Model.Products.Description" />
+        </div>*@
+
+        @*<br />*@
+
+        @*<div class="form-group">
+            @*To submit a button, set it up in a form tag*@
+            @*<label>Price</label>
+            <input class="form-control" name="Price" value="@Model.Products.Price" />*@
+        @*</div>
+
+        <br />*@
+
+        @*<div class="form-group">
+            <label>Edit Image</label>
+            <input id="productEditImageURL" name="ImageURL" type="hidden" />
+            <input id="productEditImageUpload" class="form-control" name="Image" type="file" />
+        </div>*@
+
+        @*<br />
+        <img id="productEditImageContainer">
+
+        <br />
+
+        <button type="button" class="btn btn-primary" id="updateBtn">Update</button>
+    </div>
+</form>*@
+
+<script>
+    $(document).ready(function () {
+
+        debugger;
+        if ('@Model.ImageUrl' != '') {
+            $("#EditProductImageContainer").attr("src", '@Model.ImageUrl');
+        }
+        else {
+            $("#ImageProductCaption").append("<p>No image assigned to this Category.</p>");
+        }
+    });
+
+    $("#updateBtn").click(function () {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Edit", "Product")', //'/Product/Edit',
+            data: $("#editProduct").serialize() //Picks all the values in the text boxes.
+        })
+            .done(function (response) {
+                $("#tableContainer").html(response);
+                $("#createContainer").html("");
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Fail");
+            });
+    });
+
+    $("#productEditImageUpload").change(function () {
+        var formData = new FormData();
+
+        var element = this;
+        var totalfiles = element.files.length;
+
+        for (var i = 0; i < totalfiles; i++) {
+            var file = element.files[i];
+            formData.append("Photo", file);
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UploadImage", "Shared")', //'/Shared/UploadImage',
+            dataType: 'json',
+            data: formData,
+            contentType: false,
+            processData: false
+        })
+            .done(function (response) {
+
+                if (response.success) {
+                    $("#productEditImageURL").val(response.ImageUrl);
+                    //This 'ImageUrl' should have the same name as in Shared Controller
+                    $("#productEditImageContainer").attr("src", response.ImageUrl);
+                    $("#ImageCategoryCaption").remove();
+                }
+                console.log(response);
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            })
+    })
+</script>

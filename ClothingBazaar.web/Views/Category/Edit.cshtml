@@ -1,0 +1,154 @@
+﻿@model EditCategoryViewModel
+
+@{
+    ViewBag.Title = "Edit";
+
+    var isFeaturedCheck = Model.isFeatured ? "checked" : string.Empty;
+
+    var imageURL = !string.IsNullOrEmpty(Model.ImageURL) ? Model.ImageURL : "/Content/images/system/placeholder-image.png";
+
+}
+
+<h2>Edit Category</h2>
+
+@*<form id="catEditForm">
+        <div class="form-group">
+            <input type="hidden" name="ID" value="@Model.ID" />
+
+            <div class="form-group">
+                <label>Name</label>
+                <input class="form-control" name="Name" value="@Model.Name" />
+            </div>
+            <br />
+
+            <div class="form-group">
+                To submit a button, set it up in a form tag
+                <label>Description</label>
+                <input class="form-control" name="Description" value="@Model.Description" />
+            </div>
+
+            <div class="comment-respond">
+                <input type="checkbox"
+                       name="isFeatured"
+                       id="isFeaturedEdit"
+                       @isFeaturedCheck
+                       style="display: inline;"
+                       value="true">
+                <label for="isFeatured">Featured Category</label>
+            </div>
+            <br />
+
+            <br />
+            <div class="form-group">
+                <label>Edit Image</label>
+                <input id="EditImageURL" name="ImageURL" type="hidden" />
+                <input id="editImageUpload" class="form-control" name="Image" type="file" />
+            </div>
+            <br />
+
+            <label>Current Image Selected</label>
+            <br />
+            <div id="ImageCategoryCaption"></div>
+            <img id="EditImageContainer">
+
+            <br />
+
+            <button type="button" class="btn btn-primary" id="editCatBtn">Save</button>
+            <button type="button" class="btn btn-secondary" id="cancelEditCatBtn">Cancel</button>
+        </div>
+    </form>*@
+
+<form id="catEditForm">
+    <input type="hidden" name="ID" value="@Model.ID" />
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label>Name</label>
+                <input class="form-control" name="Name" value="@Model.Name" />
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <input class="form-control" name="Description" value="@Model.Description" />
+            </div>
+            <div class="form-group">
+                <label>Image</label>
+                <input type="hidden" id="EditImageURL" name="ImageURL" value="@Model.ImageURL" />
+                <input class="form-control" id="editImageUpload" name="ImageURL" type="file" />
+            </div>
+            <div class="form-group">
+                <div class="comment-respond">
+                    <input type="checkbox"
+                           name="isFeatured"
+                           id="isFeaturedEdit"
+                           @isFeaturedCheck
+                           style="display: inline;"
+                           value="true">
+                    <label for="isFeatured">Featured Category</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="thumb">
+                <img src="@imageURL" class="img-thumbnail img-fluid" id="EditImageContainer" />
+            </div>
+        </div>
+    </div>
+    <button id="editCatBtn" type="button" class="btn btn-primary">Update</button>
+    <button type="button" class="btn btn-secondary" id="cancelEditCatBtn">Cancel</button>
+</form>
+
+<script>
+
+    $("#cancelEditCatBtn").click(function () {
+        $("#createCategoryContainer").html("");
+    });
+
+    $("#editCatBtn").click(function () {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Edit","Category")',//'/Category/Edit',
+            data: $("#catEditForm").serialize() //Picks all the values in the text boxes.
+        })
+            .done(function (response) {
+                $("#tableCategoryContainer").html(response);
+                $("#createCategoryContainer").html("");
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Fail");
+            });
+    });
+
+    $("#editImageUpload").change(function () {
+        var formData = new FormData();
+
+        var element = this;
+        var totalfiles = element.files.length;
+
+        for (var i = 0; i < totalfiles; i++) {
+            var file = element.files[i];
+            formData.append("Photo", file);
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UploadImage", "Shared")',//'/Shared/UploadImage',
+            dataType: 'json',
+            data: formData,
+            contentType: false,
+            processData: false
+        })
+            .done(function (response) {
+                if (response.success) {
+                    $("#EditImageURL").val(response.ImageUrl);
+                    //This 'ImageUrl' should have the same name as in Shared Controller
+                    $("#EditImageContainer").attr("src", response.ImageUrl);
+                    //$("#ImageCategoryCaption").remove();
+                }
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            })
+    })
+
+</script>

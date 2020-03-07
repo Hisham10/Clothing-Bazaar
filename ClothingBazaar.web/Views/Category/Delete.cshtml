@@ -1,0 +1,60 @@
+﻿@model ClothingBazaar.Entities.Category
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Are you sure you want to delete the following category?</h2>
+
+<form id="deleteCategoryForm">
+
+    <div class="form-group">
+
+        <input type="hidden" name="ID" value="@Model.ID" />
+
+        <div class="form-group">
+            <label>Name</label>
+            <input class="form-control" name="Name" value="@Model.Name" readonly />
+        </div>
+        <br />
+
+        <div class="form-group">
+            <label>Description</label>
+            <input class="form-control" name="Description" value="@Model.Description" readonly />
+        </div>
+        <br />
+
+        <!--always make sure when implementing ajax, remove type=submit from the button.-->
+        <button type="button" id="deleteCategory" class="btn btn-primary">Confirm Delete</button>
+        <button type="button" id="cancelBtn" class="btn btn-primary">Cancel</button>
+    </div>
+</form>
+
+<script>
+    $("#deleteCategory").click(function () {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Delete", "Category")',//'/Category/Delete',
+            data: $("#deleteCategoryForm").serialize() //Picks all the values in the text boxes.
+        })
+            .done(function (response) {
+                $("#tableCategoryContainer").html(response);
+                $("#createCategoryContainer").html("");
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Fail");
+            });
+    });
+
+    $("#cancelBtn").click(function () {
+        $.ajax({
+            url: '@Url.Action("CategoryTable", "Category")',//'/Category/CategoryTable'
+        })
+            .done(function () {
+                $("#createCategoryContainer").html("");
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Fail");
+            });
+    });
+</script>

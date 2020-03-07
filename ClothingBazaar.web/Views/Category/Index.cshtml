@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+@*<div class="container">
+    <div id="tableCategoryContainer">
+        @{
+            Html.RenderAction("CategoryTable");
+        }
+    </div>
+
+    <hr />
+
+    <div id="createCategoryContainer">
+
+    </div>
+</div>*@
+<section class="flat-row flat-iconbox">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title-section">
+                    <h2 class="title">
+                        Categories
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div id="tableCategoryContainer">
+            @{
+                Html.RenderAction("CategoryTable");
+            }
+        </div>
+
+        <hr />
+        <div id="createCategoryContainer">
+
+        </div>
+    </div>
+</section>

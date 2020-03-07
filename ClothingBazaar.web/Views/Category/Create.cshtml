@@ -1,0 +1,132 @@
+﻿
+@{
+    ViewBag.Title = "Create";
+    var imageURL = "/Content/images/system/placeholder-image.png";
+}
+
+<h2>Create Category</h2>
+
+<form id="catCreateForm">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label>Name</label>
+                <input class="form-control" name="Name" />
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <input class="form-control" name="Description" />
+            </div>
+            <div class="form-group">
+                <label>Image</label>
+                <input type="hidden" id="ImageURL" name="ImageURL" />
+                <input class="form-control" id="imageUpload" name="Image" type="file" accept=".png, .jpg" />
+            </div>
+            <div class="form-group">
+                <div class="comment-respond">
+                    <input type="checkbox" name="isFeatured" id="isFeatured" style="display: inline;" value="true">
+                    <label for="isFeatured">Featured Category</label>
+                </div>
+            </div>
+            <br />
+            <img id="imageContainer" />
+
+        </div>
+        <div class="col-md-4">
+            <div class="thumb">
+                <img class="img-thumbnail img-fluid" id="categoryImage" src="@imageURL" />
+            </div>
+        </div>
+    </div>
+
+    <button id="catSubmit" type="button" class="btn btn-primary">Save</button>
+</form>
+
+@*<form id="catCreateForm">
+
+    <div class="form-group">
+        <label>Name</label>
+        <input class="form-control" name="Name" />
+    </div>
+
+    <br />
+
+    <div class="form-group">
+        <label>Description</label>
+        <input class="form-control" name="Description" />
+    </div>
+    <br />
+
+    <div class="form-group">
+        <label>Image</label>
+        <input id="ImageURL" name="ImageURL" type="hidden" />
+        <input class="form-control" id="imageUpload" name="Image" type="file" />
+    </div>
+    <br />
+
+    <div class="comment-respond">
+        <input type="checkbox" name="isFeatured" id="isFeatured" style="display: inline;" value="true"> 
+        <label for="isFeatured">Featured Category</label>
+    </div>
+    <br />
+
+    <img id="imageContainer" />
+
+    <br />
+
+    <button type="button" class="btn btn-primary" id="catSubmit">Save</button> We need to mention the type button here for ajax to pick this button up. also remove any post method
+</form>*@
+
+<script>
+    $("#catSubmit").click(function () {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Create", "Category")', //'/Category/Create',
+            data: $("#catCreateForm").serialize(), //Picks all the values in the text boxes.
+            
+        })
+            .done(function (response) {
+                $("#tableCategoryContainer").html(response);
+                $("#createCategoryContainer").html("");
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Fail");
+            });
+    });
+
+    $("#imageUpload").change(function () {
+
+        //so basically .serialize function also creates an object of form data and sends it.
+        //Here, we are not using any kind of form or .serialize but we have to send the image data therefore, we have to create
+        //an object of form data initially.
+        var formData = new FormData();
+
+        var element = this;
+        var totalfiles = element.files.length;
+
+        for (var i = 0; i < totalfiles; i++) {
+            var file = element.files[i];
+            formData.append("Photo", file);
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UploadImage", "Shared")', //'/Shared/UploadImage',
+            dataType: 'json',
+            data: formData,
+            contentType: false,
+            processData: false
+        })
+            .done(function (response) {
+                alert(response);
+                if (response.success) {
+                    $("#ImageURL").val(response.ImageUrl);
+                    $("#categoryImage").attr("src", response.ImageUrl);
+                }
+                console.log(response);
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            })
+    })
+</script>

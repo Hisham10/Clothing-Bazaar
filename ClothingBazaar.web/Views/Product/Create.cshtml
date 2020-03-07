@@ -1,0 +1,142 @@
+﻿<!--//Since we have referenced 'ClothingBazar.Web' in web.config, we will not have to use the full reference again. we can only pass the model deirectly.-->
+@model NewProductViewModel
+@{
+    ViewBag.Title = "Create";
+
+    var date = DateTime.Now;
+}
+
+<h2>Create Product</h2>
+
+<form id="createProduct">
+    <div class="form-group">
+        <label>Category</label>
+        <select class="form-control" name="CategoryID">
+            @foreach (var category in Model.categories)
+            {
+                <option value="@category.ID">@category.Name</option>
+            }
+        </select>
+    </div>
+    <input type="hidden" class="form-control" name="AddedOn" value="@date" />
+    <div class="form-group">
+        <label>Name</label>
+        <input class="form-control" name="Name" />
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <input class="form-control" name="Description" />
+    </div>
+    <div class="form-group">
+        <label>Price</label>
+        <input class="form-control" name="Price" />
+    </div>
+    <div class="form-group">
+        <label>Image</label>
+        <input id="productImageURL" name="ImageURL" type="hidden" />
+        <input class="form-control" id="productImageUpload" name="Image" type="file" />
+    </div>
+    <img id="productImageContainer" />
+    <button id="saveBtn" type="button" class="btn btn-primary">Save</button>
+</form>
+
+@*<form id="createForm">
+    <div class="form-group">
+        <label>Category</label>
+        <select name="CategoryID" class="form-control">
+            <option disabled selected> -- Select a category -- </option> <!--Default selection of dropdown-->
+            @foreach (var category in Model)
+            {
+                <option value="@category.ID">@category.Name</option>//We will pass the 'value' of the category ID.
+            }
+
+        </select>
+    </div>
+
+    <br />
+
+    <input type="hidden" class="form-control" name="AddedOn" value="@date" />
+
+    <div class="form-group">
+        <label>Name</label>
+        <input class="form-control" name="Name" />
+    </div>
+    <br />
+
+    <div class="form-group">
+        <label>Description</label>
+        <input class="form-control" name="Description" />
+    </div>
+    <br />
+
+    <div class="form-group">
+        <label>Price</label>
+        <input class="form-control" name="Price" />
+    </div>
+    <div class="form-group">
+        <label>Image</label>
+        <input id="productImageURL" name="ImageURL" type="hidden" />
+        <input class="form-control" id="productImageUpload" name="Image" type="file" />
+    </div>
+    <br />
+
+    <img id="productImageContainer" />
+
+    <br />
+
+    <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
+</form>*@
+
+<script>
+    $("#saveBtn").click(function () {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Create", "Product")', //'/Product/Create',
+            data: $("#createProduct").serialize() //Picks all the values in the text boxes.
+        })
+            .done(function (response) {
+                $("#tableContainer").html(response);
+                $("#createContainer").html("");
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Fail");
+            });
+    });
+
+    $("#productImageUpload").change(function () {
+
+        //so basically .serialize function also creates an object of form data and sends it.
+        //Here, we are not using any kind of form or .serialize but we have to send the image data therefore, we have to create
+        //an object of form data initially.
+        var formData = new FormData();
+
+        var element = this;
+        var totalfiles = element.files.length;
+
+        for (var i = 0; i < totalfiles; i++) {
+            var file = element.files[i];
+            formData.append("Photo", file);
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UploadImage", "Shared")', //'/Shared/UploadImage',
+            dataType: 'json',
+            data: formData,
+            contentType: false,
+            processData: false
+        })
+            .done(function (response) {
+
+                if (response.success) {
+                    $("#productImageURL").val(response.ImageUrl);
+                    $("#productImageContainer").attr("src", response.ImageUrl);
+                }
+                console.log(response);
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            })
+    })
+</script>
