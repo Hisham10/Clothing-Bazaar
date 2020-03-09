@@ -1,11 +1,8 @@
 ﻿using ClothingBazaar.Database;
 using ClothingBazaar.Entities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.Entity;
+using System.Linq;
 
 namespace ClothingBazaar.Services
 {
@@ -39,7 +36,24 @@ namespace ClothingBazaar.Services
             //}
         }
 
-        public List<Category> GetCategories() //Returns a list of categories
+        public int GetCategoriesCount(string search)
+        {
+            using (CBContext db = new CBContext())
+            {
+                if (string.IsNullOrEmpty(search) == false)
+                {
+                    return db.Categories
+                            .Where(category => category.Name != null &&
+                            category.Name.ToLower().Contains(search.ToLower())).Count();
+                }
+                else
+                {
+                    return db.Categories.Count();
+                } 
+            }
+        }
+
+        public List<Category> GetAllCategories() //Returns a list of all categories
         {
             using (CBContext db = new CBContext())
             {
@@ -51,6 +65,33 @@ namespace ClothingBazaar.Services
             //{
             //    return context.Categories.ToList(); 
             //}
+        }
+
+        public List<Category> GetCategories(string search, int pageNo) //Returns a list of categories
+        {
+            int pageSize = 5;
+            using (CBContext db = new CBContext())
+            {
+                if (string.IsNullOrEmpty(search) == false)
+                {
+                    return db.Categories
+                            .Where(category=>category.Name!=null && category.Name.ToLower().Contains(search.ToLower()))
+                            .OrderBy(x => x.ID)
+                            .Skip((pageNo - 1) * pageSize)
+                            .Take(pageSize)
+                            .Include(cat => cat.Products)
+                            .ToList();
+                }
+                else
+                {
+                    return db.Categories
+                            .OrderBy(x => x.ID)
+                            .Skip((pageNo - 1) * pageSize)
+                            .Take(pageSize)
+                            .Include(cat => cat.Products)
+                            .ToList();
+                }
+            }
         }
 
         public List<Category> GetFeaturedCategories()

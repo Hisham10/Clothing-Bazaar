@@ -45,7 +45,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <td class="font-weight-bold" >Category Name</td>
+                <td class="font-weight-bold">Category Name</td>
                 <td class="font-weight-bold">Products</td>
                 <td class="wrap-td font-weight-bold">Actions</td>
             </tr>
@@ -76,6 +76,30 @@
             }
         </tbody>
     </table>
+
+    <div>
+        @if (Model.Pager != null)
+        {
+            if (Model.Pager.CurrentPage > 1)
+            {
+                <button class="pageButtons" data-pageNo="1">First</button>
+                <button class="pageButtons" data-pageNo="@(Model.Pager.CurrentPage - 1)">Previous</button>
+            }
+
+            for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++)
+            {
+                string activeClass = Model.Pager.CurrentPage == page ? "active bg-info" : string.Empty;
+                <button class="@activeClass pageButtons" data-pageNo="@page">@page</button>
+            }
+
+            if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
+            {
+                <button class="pageButtons" data-pageNo="@(Model.Pager.CurrentPage + 1)">Next</button>
+                <button class="pageButtons" data-pageNo="@(Model.Pager.EndPage)">Last</button>
+            }
+        }
+    </div>
+
 </div>
 
 <!--#region Old Code  -->
@@ -125,9 +149,24 @@
 
 <script>
 
+    $(".pageButtons").click(function () {
+        $.ajax({
+            url: '@Url.Action("CategoryTable", "Category")',
+            data: {
+                pageNo: $(this).attr("data-pageNo"),
+                search: @Model.SearchTerm //Sending search data as well cz otherwise clicking the button will loose search value.
+                }
+            })
+            .done(function (response) {
+                $("#tableCategoryContainer").html(response);
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+    });
+
     $("#searchBtn").click(function () {
         var searchValue = $("#searchTxt").val();
-
         $.ajax({
             url: '@Url.Action("CategoryTable", "Category")', //Using URL helper instead of the hard coded URL which we used before.
                 /*'/Category/CategoryTable',*/

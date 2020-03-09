@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
 
 namespace ClothingBazaar.web.Controllers
 {
@@ -14,19 +15,29 @@ namespace ClothingBazaar.web.Controllers
     {
         //CategoriesService categoryService = new CategoriesService(); //Creating an object of the serivce.
 
-        public ActionResult CategoryTable(String search)
+        public ActionResult CategoryTable(String search, int? pageNo)
         {
             CategorySearchViewModel model = new CategorySearchViewModel();
 
-            model.Categories = CategoriesService.Instance.GetCategories();
+            model.SearchTerm = search;
+            int pageSize = 5; //int.Parse(ConfigurationService.Instance.GetConfig("ListingPageSize").Value);
 
-            if (string.IsNullOrEmpty(search) == false)
+            pageNo = pageNo.HasValue ? pageNo.Value > 0 ? pageNo.Value : 1 : 1;
+
+            var totalRecords = CategoriesService.Instance.GetCategoriesCount(search);
+            model.Categories = CategoriesService.Instance.GetCategories(search, pageNo.Value);
+
+            if(model.Categories != null)
             {
-                model.SearchTerm = search;
-                model.Categories = model.Categories.Where(p => p.Name != null && p.Name.ToLower().Contains(search.ToLower())).ToList();   
-            }
+                model.Pager = new Pager(totalRecords, pageNo, pageSize);
 
-            return PartialView(model);
+                return PartialView(model);
+            }
+            else
+            {
+                return HttpNotFound();
+            }
+            
         }
 
         public ActionResult Index()

@@ -40,7 +40,7 @@ namespace ClothingBazaar.web.Controllers
         {
             NewProductViewModel model = new NewProductViewModel();
 
-            model.categories = CategoriesService.Instance.GetCategories();
+            model.categories = CategoriesService.Instance.GetAllCategories();
             return PartialView(model);
         }
         
@@ -79,7 +79,7 @@ namespace ClothingBazaar.web.Controllers
             model.CategoryID = product.Category != null ? product.Category.ID : 0;
             model.ImageUrl = product.ImageUrl;
             model.AddedOn = product.AddedOn;
-            model.AvailableCategories = CategoriesService.Instance.GetCategories();
+            model.AvailableCategories = CategoriesService.Instance.GetAllCategories();
 
             return PartialView(model);
         }
