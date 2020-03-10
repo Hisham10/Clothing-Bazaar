@@ -30,7 +30,7 @@ namespace ClothingBazaar.Services
             using(CBContext db = new CBContext()) { 
             return db.Categories.Find(id);
             }
-            //using (var context = new CBContext()) //We have to install Entity Framework in NUGet pakages in services as well.
+            //using (var context = new CBContext()) 
             //{
             //    return context.Categories.Find(id); 
             //}
@@ -59,12 +59,7 @@ namespace ClothingBazaar.Services
             {
                 return db.Categories.Include(cat => cat.Products).ToList();
             }
-            //Here we used the include method to include all the products related to that category.
-
-            //using (var context = new CBContext()) //We have to install Entity Framework in NUGet pakages in services as well.
-            //{
-            //    return context.Categories.ToList(); 
-            //}
+            
         }
 
         public List<Category> GetCategories(string search, int pageNo) //Returns a list of categories
@@ -109,11 +104,6 @@ namespace ClothingBazaar.Services
                 db.Categories.Add(category);
                 db.SaveChanges();
             }
-            //using(var context = new CBContext()) //We have to install Entity Framework in NUGet pakages in services as well.
-            //{
-            //    context.Categories.Add(category);
-            //    context.SaveChanges();
-            //}
         }
 
         public void UpdateCategory(Category category)
@@ -123,12 +113,6 @@ namespace ClothingBazaar.Services
                 db.Entry(category).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
             }
-            //using (var context = new CBContext()) //We have to install Entity Framework in NUGet pakages in services as well.
-            //{
-            //    //We just need to inform the entity framework that we have made any modifications to the data
-            //    context.Entry(category).State = System.Data.Entity.EntityState.Modified;
-            //    context.SaveChanges();
-            //}
         }
 
         public void DeleteCategory(int ID)
@@ -139,15 +123,6 @@ namespace ClothingBazaar.Services
                 db.Categories.Remove(category);
                 db.SaveChanges();
             }
-            //using (var context = new CBContext())
-            //{
-            //    var category = context.Categories.Find(ID);
-
-            //    //context.Entry(category).State = System.Data.Entity.EntityState.Deleted;
-            //    context.Categories.Remove(category); //This and the above method is same.
-
-            //    context.SaveChanges();
-            //}
         }
     }
 }

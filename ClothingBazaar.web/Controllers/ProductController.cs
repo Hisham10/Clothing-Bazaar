@@ -52,14 +52,12 @@ namespace ClothingBazaar.web.Controllers
             newProduct.Name = model.Name;
             newProduct.Price = model.Price;
             newProduct.Description = model.Description;
-            newProduct.Category = CategoriesService.Instance.GetCategory(model.CategoryID); //Since we have now added the categoryID property in the product entity, therefore, we can send the ID directly to the model.
+            newProduct.Category = CategoriesService.Instance.GetCategory(model.CategoryID); 
             newProduct.ImageUrl = model.ImageUrl;
             newProduct.AddedOn = model.AddedOn;
+            
 
-            //Now we have an object of category in our products entity. therefore, we'll need to get category object using category's ID.
-            //newProduct.Category = categoriesService.GetCategory(model.CategoryID);
-
-            ProductsService.Instance.SaveProduct(newProduct); //This method comes from the Product Service class
+            ProductsService.Instance.SaveProduct(newProduct); 
 
             return RedirectToAction("ProductTable");
         }
@@ -98,10 +96,7 @@ namespace ClothingBazaar.web.Controllers
             ProductsService.Instance.UpdateProduct(existingProduct);
 
             return RedirectToAction("ProductTable");
-
-            //productsService.UpdateProduct(product); //This method comes from the Produc Service class
-
-            //return RedirectToAction("ProductTable");
+            
         }
         #endregion
 
@@ -109,7 +104,7 @@ namespace ClothingBazaar.web.Controllers
         [HttpPost]
         public ActionResult Delete(int ID)
         {
-            ProductsService.Instance.DeleteProduct(ID); //This method comes from the Produc Service class
+            ProductsService.Instance.DeleteProduct(ID);
 
             return RedirectToAction("ProductTable");
         }

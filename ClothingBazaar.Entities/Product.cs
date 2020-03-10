@@ -18,10 +18,3 @@ namespace ClothingBazaar.Entities
     }
 }
 
-//Next step after this is to install entity framework in the database project
-//Create a context class -- DBset for each entity and set the base class as dbcontext
-//Modify app.config by copying the connection string line div from the web.config file from the web project
-//You can change the name of the connection by changing the value of initial catalogue.
-//Make sure to Override the base constructor with the string of the connection name.
-//The next step is to enable migrations.
-//For migrations step check the cbcontext.cs file.

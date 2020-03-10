@@ -141,10 +141,7 @@
     });
 
     $("#imageUpload").change(function () {
-
-        //so basically .serialize function also creates an object of form data and sends it.
-        //Here, we are not using any kind of form or .serialize but we have to send the image data therefore, we have to create
-        //an object of form data initially.
+        
         var formData = new FormData();
 
         var element = this;

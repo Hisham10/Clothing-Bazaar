@@ -10,12 +10,11 @@ namespace ClothingBazaar.Database
 {
     public class CBContext : DbContext, IDisposable
     {
-        public CBContext() : base("ClothingBazaarConnection") //Overriding the constructor of base class by telling the name of the connection string.
+        public CBContext() : base("ClothingBazaarConnection")
         {
 
         }
         
-        //Telling the entity framework that these are the entities that you have to associate the database with.
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Config> Configurations { get; set; }

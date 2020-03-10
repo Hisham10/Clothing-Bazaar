@@ -10,7 +10,6 @@ using System.Data.Entity;
 
 namespace ClothingBazaar.web.Controllers
 {
-    //Its just a normal simple class and the only difference is that its inherited from controller class which comes from MVC
     public class CategoryController : Controller 
     {
         //CategoriesService categoryService = new CategoriesService(); //Creating an object of the serivce.
@@ -46,7 +45,6 @@ namespace ClothingBazaar.web.Controllers
         }
 
         // GET: Category
-        //When server has to give something to the user, the user will get through this. so it will be received in get method.
         public ActionResult Create()
         {
             NewCategoryViewModel model = new NewCategoryViewModel();
@@ -55,8 +53,6 @@ namespace ClothingBazaar.web.Controllers
         }
 
         //POST: Category
-        //If its post then we're expecting to receive a data so we have to set something as a parameter.
-        //Now if we're creating a category so we should receive a category as well.
         [HttpPost]
         public ActionResult Create(NewCategoryViewModel model) 
         {
@@ -68,7 +64,7 @@ namespace ClothingBazaar.web.Controllers
                 newCategory.ImageURL = model.ImageURL;
                 newCategory.isFeatured = model.isFeatured;
 
-                CategoriesService.Instance.SaveCategory(newCategory); //This method comes from the Category Service class
+                CategoriesService.Instance.SaveCategory(newCategory); 
 
                 return RedirectToAction("CategoryTable");
             }
@@ -118,7 +114,7 @@ namespace ClothingBazaar.web.Controllers
         [HttpPost]
         public ActionResult Delete(Category category)
         {
-            CategoriesService.Instance.DeleteCategory(category.ID); //This method comes from the Category Service class
+            CategoriesService.Instance.DeleteCategory(category.ID);
 
             return RedirectToAction("CategoryTable");
         }
