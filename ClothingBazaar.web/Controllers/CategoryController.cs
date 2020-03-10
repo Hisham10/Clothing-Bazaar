@@ -60,15 +60,23 @@ namespace ClothingBazaar.web.Controllers
         [HttpPost]
         public ActionResult Create(NewCategoryViewModel model) 
         {
-            var newCategory = new Category();
-            newCategory.Name = model.Name;
-            newCategory.Description = model.Description;
-            newCategory.ImageURL = model.ImageURL;
-            newCategory.isFeatured = model.isFeatured;
+            if (ModelState.IsValid)
+            {
+                var newCategory = new Category();
+                newCategory.Name = model.Name;
+                newCategory.Description = model.Description;
+                newCategory.ImageURL = model.ImageURL;
+                newCategory.isFeatured = model.isFeatured;
 
-            CategoriesService.Instance.SaveCategory(newCategory); //This method comes from the Category Service class
+                CategoriesService.Instance.SaveCategory(newCategory); //This method comes from the Category Service class
 
-            return RedirectToAction("CategoryTable");
+                return RedirectToAction("CategoryTable");
+            }
+            else
+            {
+                return new HttpStatusCodeResult(500);
+            }
+            
         }
 
         // GET: Edit

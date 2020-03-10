@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-md-8">
             <div class="form-group">
-                <label>Name</label>
+                <label><span style="color: red">*</span>Name</label>
                 <input class="form-control" name="Name" />
             </div>
             <div class="form-group">
@@ -81,21 +81,58 @@
 <!--#endregion-->
 
 <script>
-    $("#catSubmit").click(function () {
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("Create", "Category")', //'/Category/Create',
-            data: $("#catCreateForm").serialize(), //Picks all the values in the text boxes.
+    //Setting up form validation using jQuery
+    $("#catCreateForm").validate({
+        rules: {
+            Name: {
+                required: true,
+                minlength: 3,
+                maxlength: 50
+            },
+            Description: {
+                maxlength: 500
+            }
+        },
+        messages: {
+            Name: {
+                required: "Name is required",
+                minlength: jQuery.validator.format("At least {0} characters required!"),
+                maxlength: jQuery.validator.format("At least {0} characters required!")
+            },
+            Description: {
+                maxlength: jQuery.validator.format("Maximum {0} characters are allowed!")
+            }
+        }
+    });
 
-        })
-            .done(function (response) {
-                focusAction("tableCategoryContainer");
-                $("#tableCategoryContainer").html(response);
-                $("#createCategoryContainer").html("");
+    $("#catSubmit").click(function () {
+        if ($("#catCreateForm").valid()) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Create", "Category")', //'/Category/Create',
+                data: $("#catCreateForm").serialize(), //Picks all the values in the text boxes.
+
             })
-            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
-                alert("Fail");
-            });
+                .done(function (response) {
+                    focusAction("tableCategoryContainer");
+                    $("#tableCategoryContainer").html(response);
+                    $("#createCategoryContainer").html("");
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Warning',
+                        text: 'Please enter all required fields',
+                    })
+                });
+        }
+        else {
+            Swal.fire({
+                icon: 'error',
+                title: 'JS Warning',
+                text: 'Please enter all required fields',
+            })
+        }
     });
 
     $("#catCancel").click(function () {
@@ -139,3 +176,9 @@
             })
     })
 </script>
+
+<style>
+    .error {
+        color: red;
+    }
+</style>

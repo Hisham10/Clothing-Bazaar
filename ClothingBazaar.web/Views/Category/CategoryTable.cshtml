@@ -154,7 +154,7 @@
             url: '@Url.Action("CategoryTable", "Category")',
             data: {
                 pageNo: $(this).attr("data-pageNo"),
-                search: @Model.SearchTerm //Sending search data as well cz otherwise clicking the button will loose search value.
+                search: '@Model.SearchTerm' //Sending search data as well cz otherwise clicking the button will loose search value.
                 }
             })
             .done(function (response) {
